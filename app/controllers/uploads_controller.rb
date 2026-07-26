@@ -5,13 +5,15 @@ class UploadsController < ApplicationController
   before_action :set_upload, only: [:show, :destroy, :rename]
   before_action :check_owner, only: [:destroy, :rename]
 
+  rescue_from ActiveRecord::RecordNotFound, with: :upload_not_found
+
   def index
     @uploads = current_user.uploads.order(created_at: :desc)
   end
 
   def show
     @upload.increment!(:views) if !current_user || @upload.user != current_user
-    
+
     # Always redirect to the image blob, even for HTML requests
     redirect_to rails_blob_path(@upload.file, disposition: "inline"), allow_other_host: true
   end
@@ -50,8 +52,19 @@ class UploadsController < ApplicationController
 
   private
 
+  def upload_not_found
+    if request.format.html?
+      render plain: "404 Not Found - This file does not exist or has been deleted.", status: :not_found
+    else
+      render json: { error: "File not found" }, status: :not_found
+    end
+  end
+
   def set_upload
-    @upload = Upload.find_by!(slug: params[:id])
+    # If the user tries to access /uploads/SLUG.jpg, Rails interprets params[:id] as "SLUG" and params[:format] as "jpg"
+    # Or sometimes they add extensions manually. We should be robust:
+    clean_id = params[:id].to_s.split('.').first
+    @upload = Upload.find_by!(slug: clean_id)
   end
 
   def check_owner
@@ -62,11 +75,11 @@ class UploadsController < ApplicationController
 
   def authenticate_with_token_or_session!
     auth_header = request.headers['Authorization'] || params[:token]
-    
+
     if auth_header.present?
       token = auth_header.to_s.sub('Bearer ', '')
       @api_user = User.find_by(token: token)
-      
+
       unless @api_user
         render json: { error: 'Invalid API token' }, status: :unauthorized
       end
