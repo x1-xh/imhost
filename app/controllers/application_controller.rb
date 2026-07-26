@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
   private
 
   def check_root_user_setup
+    return if request.path == rails_health_check_path || request.path == '/up'
+
     if User.count == 0 && request.path != setup_path && request.path != setup_create_path
       redirect_to setup_path
     end
