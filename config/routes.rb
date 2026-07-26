@@ -17,5 +17,7 @@ Rails.application.routes.draw do
   end
 
   get "dashboard/index"
-  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Custom health check to output exactly "200 OK"
+  get "up" => "health#show", as: :rails_health_check
 end
