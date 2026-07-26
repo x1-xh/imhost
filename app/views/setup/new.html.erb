@@ -1,0 +1,68 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <div class="flex justify-center">
+      <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+      </div>
+    </div>
+    <h2 class="mt-6 text-center text-2xl font-bold tracking-tight text-white">Initial Setup</h2>
+    <p class="mt-2 text-center text-sm text-neutral-400">
+      Welcome to your self-hosted image platform. Let's create the root administrator account.
+    </p>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <%= form_with(model: @user, url: setup_create_path, class: "space-y-6") do |f| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-md bg-red-900/30 p-4 border border-red-800">
+          <div class="flex">
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-400"><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
+              <div class="mt-2 text-sm text-red-300">
+                <ul class="list-disc space-y-1 pl-5">
+                  <% @user.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :name, "Display Name", class: "block text-sm font-medium leading-6 text-white" %>
+        <div class="mt-2">
+          <%= f.text_field :name, required: true, class: "block w-full rounded-md border-0 bg-neutral-800/50 py-1.5 text-white shadow-sm ring-1 ring-inset ring-neutral-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :email, "Email address", class: "block text-sm font-medium leading-6 text-white" %>
+        <div class="mt-2">
+          <%= f.email_field :email, autocomplete: "email", required: true, class: "block w-full rounded-md border-0 bg-neutral-800/50 py-1.5 text-white shadow-sm ring-1 ring-inset ring-neutral-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :password, "Password", class: "block text-sm font-medium leading-6 text-white" %>
+        <div class="mt-2">
+          <%= f.password_field :password, autocomplete: "new-password", required: true, class: "block w-full rounded-md border-0 bg-neutral-800/50 py-1.5 text-white shadow-sm ring-1 ring-inset ring-neutral-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :password_confirmation, "Confirm password", class: "block text-sm font-medium leading-6 text-white" %>
+        <div class="mt-2">
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "block w-full rounded-md border-0 bg-neutral-800/50 py-1.5 text-white shadow-sm ring-1 ring-inset ring-neutral-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.submit "Create Root Account", class: "flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>
